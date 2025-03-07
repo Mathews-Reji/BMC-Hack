@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Medical ID Generator</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background: #f4f4f4;
+            color: #333;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: url('bg.jpg') no-repeat center center/cover;
+            border-radius: 15px;
+            margin: 20px;
+            position: relative;
+            color: white;
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Dark overlay for better text readability */
+            border-radius: 15px;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn.learn-more {
+            background: white;
+            border: 2px solid #333;
+            color: #333;
+        }
+
+        .btn.contact {
+            background: #111;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Why Section */
+        .why {
+            padding: 40px;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .feature {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .step {
+            background: white;
+            color: #ff4b5c;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 40px;
+        }
+
+        .testimonial-container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        /* Call to Action */
+        .cta {
+            background: #8e8b8b;
+            color: white;
+            padding: 40px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #fd6b6b;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #d43f4a;
+        }
+        .header {
+            display: flex;
+            justify-content:center;
+            align-items: center;
+            padding: 15px 30px; /* Reduced padding */
+            background: transparent; /* Transparent effect */
+            backdrop-filter: blur(10px); /* Adds a blur effect */
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        /* Navigation */
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            flex-grow: 1;
+        }
+        .nav {
+            display: flex;
+            gap: 15px; /* Reduce space between nav items */
+        }
+
+        /* Links */
+        .nav a {
+            font-family: Arial, sans-serif;
+            text-decoration: none;
+            color: rgb(253, 250, 250);
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .nav a:hover, 
+        .nav a.active {
+            color: #7827ca;
+        }
+        .login-container {
+            position: absolute;
+            right: 30px;
+            top: 15px;
+            margin-right: 50px;
+        }
+
+        .login-btn {
+            background: #111;
+            color: white;
+            padding: 8px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        
+        .login-btn:hover {
+            background: #5942be;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 15px 20px;
+            }
+
+            .nav {
+                margin-top: 10px;
+                gap: 10px; /* Further reduce gap in smaller screens */
+            }
+            .features-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .login-container {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-top: 10px;
+            }
+        }
+        .features-section {
+            text-align: center;
+            padding: 50px 10%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 50px auto;
+            max-width: 1200px;
+        }
+
+        .features-section h2 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .features-section p {
+            font-size: 16px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .features-container {
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+            gap: 20px;
+            width:100%;
+            align-items: center;
+            justify-content: center;
+            background-color: #f4f4f4;
+        }
+        .card {
+            display: flex;
+            width: 80%;
+            max-width: 900px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .left {
+            flex: 1;
+            background: url("bg1.jpg");
+        }
+        .loop {
+            flex: 1;
+            background: url("bg3.jpg");
+        }
+        .land {
+            flex: 1;
+            background: url("bg4.jpg");
+        }
+        .lam {
+            flex: 1;
+            background: url("bg5.jpg");
+        }
+        .right {
+            flex: 1;
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .right h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .right p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+       
+    </style>
+</head>
+<header class="header">
+
+    <!-- Navigation -->
+    <div class="nav-container">
+        <nav class="nav">
+            <a href="#" class="active">Home</a>
+            <a href="#features" class="scroll-link">Features</a>
+            <a href="#reviews" class="scroll-link">Reviews</a>
+        </nav>
+    </div>
+
+    <div class="login-container">
+            <a href="login.html" class="login-btn">Login</a>
+    </div>
+</header>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your Emergency Medical Info, Instantly Accessible!</h1>
+            <p>Securely store & access your vital health details with a QR code.</p>
+            <div class="buttons">
+                <a href="#features" class="btn learn-more">Learn More</a>
+                <a href="login.html" class="btn contact">Get Started</a>
+            </div>
+        </div>
+    </section>
+
+
+    <section  id="features"class="features-section">
+        <h2>The Best of Our Features</h2>
+        <p>This is the space to introduce the Features section. Use this space to highlight your unique aspects and to present specific credentials, benefits, or special features you offer.</p>
+        
+        <div class="features-container">
+            <div class="card">
+                <div class="left"></div>
+                    <div class="right">
+                        <h1>Sign Up & Enter Medical Info</h1>
+                        <p>Create an account and securely input your essential medical details, including allergies, conditions, and emergency contacts.</p>
+                    </div>  
+            </div>
+            <div class="card">
+                <div class="loop"></div>
+                    <div class="right">
+                        <h1>Generate & Download Your QR Code</h1>
+                        <p>Instantly generate a personalized QR code that links to your medical profile for quick access in emergencies.</p>
+                    </div>  
+            </div>
+            <div class="card">
+                <div class="lam"></div>
+                    <div class="right">
+                        <h1>Blockchain powered security</h1>
+                        <p>Your medical information is protected with Hyperledger Fabric, ensuring secure, tamper-proof, and private access for authorized individuals.</p>
+                    </div>  
+            </div>
+            <div class="card">
+                <div class="land"></div>
+                    <div class="right">
+                        <h1>Healthcare Providers Scan & Access Info</h1>
+                        <p>In case of an emergency, medical professionals can scan your QR code to quickly view critical health information, ensuring timely and accurate care.</p>
+                    </div>  
+                <h3></h3>
+                <p></p>
+             </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="reviews" class="testimonials">
+        <h2>What Users Say</h2>
+        <div class="testimonial-container">
+            <p class="testimonial">"This platform saved my life! My allergies were instantly available to the doctor." – <strong>Sarah L.</strong></p>
+            <p class="testimonial">"A must-have for people with medical conditions! Easy and secure." – <strong>John M.</strong></p>
+        </div>
+    </section>
+
+     <!-- Call to Action -->
+     <section class="cta">
+        <h2>Be Prepared for Any Emergency</h2>
+        <p>Generate your Medical ID now and stay safe.</p>
+        <a href="login.html" class="cta-button">Create Your Medical ID</a>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const testimonials = document.querySelectorAll(".testimonial");
+            let index = 0;
+
+            function showNextTestimonial() {
+                testimonials.forEach(t => t.style.display = "none");
+                testimonials[index].style.display = "block";
+                index = (index + 1) % testimonials.length;
+            }
+
+            showNextTestimonial();
+            setInterval(showNextTestimonial, 3000);
+        });
+     
+        document.querySelectorAll('.scroll-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 50, // Adjust for header height
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+        const testimonials = document.querySelectorAll(".testimonial");
+        let index = 0;
+
+        function showNextTestimonial() {
+            testimonials.forEach(t => t.style.display = "none");
+            testimonials[index].style.display = "block";
+            index = (index + 1) % testimonials.length;
+        }
+
+        showNextTestimonial();
+        setInterval(showNextTestimonial, 3000);
+    });
+
+    document.querySelectorAll('.scroll-link').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href').substring(1);
+            const targetSection = document.getElementById(targetId);
+
+            if (targetSection) {
+                window.scrollTo({
+                    top: targetSection.offsetTop - 50, // Adjust for header height
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    </script>
+
+</body>
+</html>

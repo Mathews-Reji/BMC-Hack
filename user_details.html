@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Medical Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #b3b1eb;
+            color: #fff;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: linear-gradient(135deg, #12013B, #34495e);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #b3b1eb;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .qr-container img {
+            width: 150px;
+            height: 150px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 2px solid #b3b1eb;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        .section h3 {
+            color: #b3b1eb;
+            border-bottom: 1px solid #b3b1eb;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .section p {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .logout-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #a696db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .logout-btn:hover {
+            background-color: #16a085;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>User Medical Details</h2>
+
+        <div class="qr-container">
+            <h3>Your QR Code</h3>
+            <img id="qr-code" src="" alt="QR Code will appear here">
+        </div>
+
+        <div class="section">
+            <h3>Personal Information</h3>
+            <p><strong>Username:</strong> <span id="username"></span></p>
+            <p><strong>Phone:</strong> <span id="phone"></span></p>
+            <p><strong>Date of Birth:</strong> <span id="dob"></span></p>
+            <p><strong>Gender:</strong> <span id="gender"></span></p>
+            <p><strong>Blood Group:</strong> <span id="bloodGroup"></span></p>
+        </div>
+
+        <div class="section">
+            <h3>Medical History</h3>
+            <p><strong>Chronic Illness:</strong> <span id="chronicIllness"></span></p>
+            <p><strong>Past Surgeries:</strong> <span id="pastSurgeries"></span></p>
+            <p><strong>Vaccination History:</strong> <span id="vaccinationHistory"></span></p>
+            <p><strong>Special Conditions:</strong> <span id="specialConditions"></span></p>
+            <p><strong>Lifestyle Factors:</strong> <span id="lifestyleFactors"></span></p>
+            <p><strong>Drug Allergies:</strong> <span id="drugAllergies"></span></p>
+            <p><strong>Food Allergies:</strong> <span id="foodAllergies"></span></p>
+            <p><strong>Environmental Allergies:</strong> <span id="environmentalAllergies"></span></p>
+        </div>
+
+        <div class="section">
+            <h3>Current Medications</h3>
+            <p><strong>Name:</strong> <span id="medicationName"></span></p>
+            <p><strong>Dosage:</strong> <span id="medicationDosage"></span></p>
+            <p><strong>Frequency:</strong> <span id="medicationFrequency"></span></p>
+        </div>
+
+        <div class="section">
+            <h3>Consulting Doctor</h3>
+            <p><strong>Name:</strong> <span id="doctorName"></span></p>
+            <p><strong>Contact:</strong> <span id="doctorContact"></span></p>
+            <p><strong>Hospital:</strong> <span id="hospital"></span></p>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const accessId = localStorage.getItem("accessId");
+            const qrCodeUrl = localStorage.getItem("qrCode");
+
+            if (!accessId) {
+                alert("No access ID found. Please log in.");
+                window.location.href = "index.html";
+                return;
+            }
+
+            if (qrCodeUrl) {
+                document.getElementById("qr-code").src = qrCodeUrl;
+            } else {
+                document.getElementById("qr-code").alt = "QR Code not available";
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/user-details/${accessId}`);
+                const userData = await response.json();
+
+                if (response.ok) {
+                    document.getElementById("username").textContent = userData.username;
+                    document.getElementById("phone").textContent = userData.phone;
+                    document.getElementById("dob").textContent = userData.dob;
+                    document.getElementById("gender").textContent = userData.gender;
+                    document.getElementById("bloodGroup").textContent = userData.bloodGroup;
+
+                    document.getElementById("chronicIllness").textContent = userData.chronicIllness;
+                    document.getElementById("pastSurgeries").textContent = userData.pastSurgeries;
+                    document.getElementById("vaccinationHistory").textContent = userData.vaccinationHistory;
+                    document.getElementById("specialConditions").textContent = userData.specialConditions;
+                    document.getElementById("lifestyleFactors").textContent = userData.lifestyleFactors;
+                    document.getElementById("drugAllergies").textContent = userData.drugAllergies;
+                    document.getElementById("foodAllergies").textContent = userData.foodAllergies;
+                    document.getElementById("environmentalAllergies").textContent = userData.environmentalAllergies;
+
+                    document.getElementById("medicationName").textContent = userData.medicationName;
+                    document.getElementById("medicationDosage").textContent = userData.medicationDosage;
+                    document.getElementById("medicationFrequency").textContent = userData.medicationFrequency;
+
+                    document.getElementById("doctorName").textContent = userData.doctorName;
+                    document.getElementById("doctorContact").textContent = userData.doctorContact;
+                    document.getElementById("hospital").textContent = userData.hospital;
+                } else {
+                    alert("Error fetching user details: " + userData.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while fetching user data.");
+            }
+        });
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    </script>
+
+</body>
+</html>

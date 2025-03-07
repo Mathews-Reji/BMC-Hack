@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Providers</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul class="menu">
+            <li><a href="dash.html">Personal Info</a></li>
+            <li><a href="med_hist.html">Medical History</a></li>
+            <li><a href="allergies.html">Allergies</a></li>
+            <li><a href="medication.html">Medication</a></li>
+            <li><a href="healthcar.html" class="active">Healthcare Providers</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>Healthcare Providers</h1>
+        <div class="form-container">
+            <form id="provider-form">
+                <div class="form-group">
+                    <label>Doctor's Name:</label>
+                    <input type="text" id="doctorName" placeholder="Enter doctor's name">
+                </div>
+                <div class="form-group">
+                    <label>Contact Number:</label>
+                    <input type="text" id="contactNumber" placeholder="Enter contact number">
+                </div>
+                <div class="form-group">
+                    <label>Hospital:</label>
+                    <input type="text" id="hospitalName" placeholder="Enter hospital name">
+                </div>
+                <button type="submit">Add Provider</button>
+            </form>
+    
+            <h2>Consulting Doctors</h2>
+            <table id="providerTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Hospital</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Providers will be added dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetchProviders(); // Load providers on page load
+    
+        document.getElementById("provider-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+    
+            const formData = {
+                name: document.getElementById("doctorName").value,
+                contact: document.getElementById("contactNumber").value,
+                hospital: document.getElementById("hospitalName").value
+            };
+    
+            try {
+                const response = await fetch("http://localhost:3000/providers", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
+    
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Healthcare provider added successfully!");
+                    document.getElementById("provider-form").reset();
+                    fetchProviders();
+                } else {
+                    alert("Error: " + result.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred.");
+            }
+        });
+    });
+    
+    async function fetchProviders() {
+        try {
+            const response = await fetch("http://localhost:3000/providers");
+            const data = await response.json();
+            const tableBody = document.querySelector("#providerTable tbody");
+            tableBody.innerHTML = "";
+    
+            data.forEach(provider => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${provider.name}</td>
+                    <td>${provider.contact}</td>
+                    <td>${provider.hospital}</td>
+                    <td><button onclick="deleteProvider('${provider._id}')">Delete</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error("Error fetching providers:", error);
+        }
+    }
+    
+    async function deleteProvider(providerId) {
+        try {
+            const response = await fetch(`http://localhost:3000/providers/${providerId}`, {
+                method: "DELETE"
+            });
+    
+            if (response.ok) {
+                alert("Provider deleted successfully!");
+                fetchProviders();
+            } else {
+                alert("Failed to delete provider.");
+            }
+        } catch (error) {
+            console.error("Error deleting provider:", error);
+        }
+    }
+    </script>
+    
+    <style>
+     /* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Body styling */
+body {
+    display: flex;
+    background-color: #b3b1eb;
+    color: #f6f2f2;
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background: linear-gradient(135deg, #12013B, #34495e);
+    padding: 20px;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+    text-align: center;
+    color: #ecf0f1;
+    margin-bottom: 20px;
+}
+
+.menu {
+    list-style: none;
+}
+
+.menu li {
+    margin-bottom: 15px;
+}
+
+.menu a {
+    display: block;
+    text-decoration: none;
+    color: #ecf0f1;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    text-align: center;
+    transition: 0.3s ease-in-out;
+}
+
+.menu a:hover, .menu a.active {
+    background-color: #b3b1eb;
+    color: white;
+}
+
+/* Content Styling */
+.content {
+    flex-grow: 1;
+    padding: 40px;
+    max-width: 900px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #14072d;
+}
+
+/* Form Styling */
+.form-container {
+    background: linear-gradient(135deg, #12013B, #34495e);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(241, 232, 232, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #a2aeba;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Button Styling */
+button {
+    width: 100%;
+    background-color: #a696db;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #16a085;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #a696db;
+    color: white;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: darkred;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 220px;
+        padding: 15px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .form-container {
+        padding: 20px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+}
+
+    </style>
+</body>
+</html>

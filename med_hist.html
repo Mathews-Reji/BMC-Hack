@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical History</title>
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background: linear-gradient(135deg, #12013B, #34495e);
+    color: #f6f2f2;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(135deg, #12013B, #34495e);
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar h2 {
+    text-align: center;
+    color: #ecf0f1;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.menu li {
+    margin: 10px 0;
+}
+
+.menu a {
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+    color: #ecf0f1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.menu a:hover, .menu a.active {
+    background-color: #b3b1eb;
+    color: white;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.form-container {
+    max-width: 600px;
+    margin: auto;
+    background: linear-gradient(135deg, #12013B, #34495e);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(241, 232, 232, 0.1);
+    transition: 0.3s;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #a2aeba;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #a696db;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #16a085;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul class="menu">
+            <li><a href="dash.html">Personal Info</a></li>
+            <li><a href="#" class="active">Medical History</a></li>
+            <li><a href="allergies.html">Allergies</a></li>
+            <li><a href="medication.html">Medication</a></li>
+            <li><a href="healthcare.html">Healthcare Providers</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>Medical History</h1>
+        <div class="form-container">
+            <form id="medical-history-form">
+                <div class="form-group">
+                    <label for="chronicIllness">Chronic Illness:</label>
+                    <input type="text" id="chronicIllness" placeholder="E.g., Diabetes, Hypertension">
+                </div>
+                <div class="form-group">
+                    <label for="pastSurgeries">Past Surgeries:</label>
+                    <textarea id="pastSurgeries" rows="3" placeholder="Provide details of past surgeries"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vaccinationHistory">Vaccination History:</label>
+                    <textarea id="vaccinationHistory" rows="3" placeholder="List your vaccinations"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="specialConditions">Special Conditions:</label>
+                    <textarea id="specialConditions" rows="3" placeholder="E.g., Asthma, Epilepsy"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="lifestyleFactors">Lifestyle Factors:</label>
+                    <select id="lifestyleFactors">
+                        <option value="None">None</option>
+                        <option value="Smoking">Smoking</option>
+                        <option value="Alcohol">Alcohol</option>
+                        <option value="Both">Both</option>
+                    </select>
+                </div>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('medical-history-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent page reload
+    
+            // Collect form data
+            const formData = {
+                chronicIllness: document.getElementById('chronicIllness').value,
+                pastSurgeries: document.getElementById('pastSurgeries').value,
+                vaccinationHistory: document.getElementById('vaccinationHistory').value,
+                specialConditions: document.getElementById('specialConditions').value,
+                lifestyleFactors: document.getElementById('lifestyleFactors').value
+            };
+    
+            try {
+                // Send data to backend
+                const response = await fetch('http://localhost:3000/save-medical-history', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+    
+                const result = await response.json();
+    
+                if (response.ok) {
+                    alert("Medical history saved successfully!");
+                } else {
+                    alert("Error saving medical history: " + result.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while saving your data.");
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allergies</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul class="menu">
+            <li><a href="personal_info.html">Personal Info</a></li>
+            <li><a href="med_hist.html">Medical History</a></li>
+            <li><a href="allergies.html" class="active">Allergies</a></li>
+            <li><a href="medication.html">Medication</a></li>
+            <li><a href="healthcare.html">Healthcare Providers</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>Allergies</h1>
+        <div class="form-container">
+            <form id="allergy-form">
+                <h2>Drug Allergies</h2>
+                <div class="form-group">
+                    <label>Do you have any drug allergies?</label>
+                    <select id="drugAllergy" onchange="toggleTextarea('drugAllergy', 'drugAllergyDetails')">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="drugAllergyDetails">
+                    <label>List the drugs you are allergic to:</label>
+                    <textarea id="drugAllergyText" rows="3"></textarea>
+                </div>
+    
+                <h2>Food Allergies</h2>
+                <div class="form-group">
+                    <label>Do you have any food allergies?</label>
+                    <select id="foodAllergy" onchange="toggleTextarea('foodAllergy', 'foodAllergyDetails')">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="foodAllergyDetails">
+                    <label>List the foods you are allergic to:</label>
+                    <textarea id="foodAllergyText" rows="3"></textarea>
+                </div>
+    
+                <h2>Environmental Allergies</h2>
+                <div class="form-group">
+                    <label>Do you have any environmental allergies?</label>
+                    <select id="envAllergy" onchange="toggleTextarea('envAllergy', 'envAllergyDetails')">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="envAllergyDetails">
+                    <label>List the environmental allergens (pollen, dust, etc.):</label>
+                    <textarea id="envAllergyText" rows="3"></textarea>
+                </div>
+    
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Load existing allergies from backend
+        fetchAllergies();
+    
+        const form = document.getElementById("allergy-form");
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+    
+            const formData = {
+                drugAllergy: document.getElementById("drugAllergy").value,
+                drugAllergyText: document.getElementById("drugAllergyText").value,
+                foodAllergy: document.getElementById("foodAllergy").value,
+                foodAllergyText: document.getElementById("foodAllergyText").value,
+                envAllergy: document.getElementById("envAllergy").value,
+                envAllergyText: document.getElementById("envAllergyText").value
+            };
+    
+            try {
+                const response = await fetch("http://localhost:3000/save-allergy", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
+    
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Allergy data saved successfully!");
+                    form.reset();
+                } else {
+                    alert("Error: " + result.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while saving data.");
+            }
+        });
+    });
+    
+    // Function to toggle textarea visibility based on dropdown selection
+    function toggleTextarea(selectId, textareaId) {
+        const selectElement = document.getElementById(selectId);
+        const textareaElement = document.getElementById(textareaId);
+        
+        if (selectElement.value === "Yes") {
+            textareaElement.classList.remove("hidden");
+        } else {
+            textareaElement.classList.add("hidden");
+        }
+    }
+    
+    // Fetch existing allergies
+    async function fetchAllergies() {
+        try {
+            const response = await fetch("http://localhost:3000/get-allergies");
+            const data = await response.json();
+    
+            if (data) {
+                document.getElementById("drugAllergy").value = data.drugAllergy;
+                document.getElementById("drugAllergyText").value = data.drugAllergyText;
+                document.getElementById("foodAllergy").value = data.foodAllergy;
+                document.getElementById("foodAllergyText").value = data.foodAllergyText;
+                document.getElementById("envAllergy").value = data.envAllergy;
+                document.getElementById("envAllergyText").value = data.envAllergyText;
+    
+                toggleTextarea("drugAllergy", "drugAllergyDetails");
+                toggleTextarea("foodAllergy", "foodAllergyDetails");
+                toggleTextarea("envAllergy", "envAllergyDetails");
+            }
+        } catch (error) {
+            console.error("Error fetching allergies:", error);
+        }
+    }
+    </script>
+    
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: #b3b1eb;
+    color: #f6f2f2;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(135deg, #12013B, #34495e);
+    padding: 20px;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+    text-align: center;
+    color: #ecf0f1;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.menu li {
+    margin: 10px 0;
+}
+
+.menu a {
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+    color: #ecf0f1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.menu a:hover, .menu a.active {
+    background-color: #b3b1eb;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #14072d;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.form-container {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+    background: linear-gradient(135deg, #12013B, #34495e);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+    border-right: 1px solid rgba(255,255,255,0.25);
+    padding: 60px;
+    width: 500px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.form-container:hover {
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #a2aeba;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #a696db;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #16a085;
+}
+
+.hidden {
+    display: none;
+}
+
+    </style>
+
+</body>
+</html>

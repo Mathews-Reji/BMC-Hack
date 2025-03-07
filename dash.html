@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Info</title>
+    <style>
+       body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #b3b1eb;
+            color: #f6f2f2;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(135deg, #12013B, #34495e);
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            color: #ecf0f1;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .menu li {
+            margin: 10px 0;
+        }
+
+        .menu a {
+            display: block;
+            padding: 12px;
+            text-decoration: none;
+            color: #ecf0f1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .menu a:hover, .menu a.active {
+            background-color: #b3b1eb;
+            color: white;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .form-container {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+            background: linear-gradient(135deg, #12013B, #34495e);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.5);
+            border-right: 1px solid rgba(255,255,255,0.25);
+            padding: 60px;
+            width: 500px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container:hover {
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #a2aeba;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #a696db;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #16a085;
+        }
+        #qr-container {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #12013B, #34495e);
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            max-width: 300px;
+            margin: auto;
+        }
+
+        #qr-container h2 {
+            color: #ffffff;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #qr-code {
+            width: 200px;
+            height: 200px;
+            border: 5px solid #b3b1eb;
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul class="menu">
+            <li><a href="#" class="active">Personal Info</a></li>
+            <li><a href="med_hist.html">Medical History</a></li>
+            <li><a href="allergies.html">Allergies</a></li>
+            <li><a href="medication.html">Medication</a></li>
+            <li><a href="healthcare.html">Healthcare Providers</a></li>
+            <li><a href="user_details.html".html>Details</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>Personal Information</h1>
+        <div class="form-container">
+            <form id="personal-info-form">
+                <div class="form-group">
+                    <label for="dob">Date of Birth:</label>
+                    <input type="date" id="dob" required>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender:</label>
+                    <select id="gender" required>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bloodGroup">Blood Group:</label>
+                    <select id="bloodGroup" required>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div>
+                <h2>Emergency Contact</h2>
+                <div class="form-group">
+                    <label for="emergencyName">Name:</label>
+                    <input type="text" id="emergencyName" required>
+                </div>
+                <div class="form-group">
+                    <label for="relationship">Relationship:</label>
+                    <input type="text" id="relationship" required>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="tel" id="phoneNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <textarea id="address" rows="3" required></textarea>
+                </div>
+                <div id="qr-container" style="text-align: center; margin-top: 20px;">
+                    <h2>Your QR Code</h2>
+                    <img id="qr-code" src="" alt="QR Code will appear here">
+                </div>
+                
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        console.log("Received QR Code:", localStorage.qrCode); 
+
+        // Handle form submission
+        document.getElementById('personal-info-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent form from submitting normally
+
+            // Collect form data
+            const formData = {
+                dob: document.getElementById('dob').value,
+                gender: document.getElementById('gender').value,
+                bloodGroup: document.getElementById('bloodGroup').value,
+                emergencyName: document.getElementById('emergencyName').value,
+                relationship: document.getElementById('relationship').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                address: document.getElementById('address').value
+            };
+
+            try {
+                // Send the data to the backend
+                const response = await fetch('http://localhost:3000/save-personal-info', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("Information saved successfully!");
+                } else {
+                    alert("Error saving information: " + result.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while saving your data.");
+            }
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+        const qrCodeUrl = localStorage.getItem("qrCode");
+        if (qrCodeUrl) {
+            document.getElementById("qr-code").src = qrCodeUrl;
+        } else {
+            document.getElementById("qr-container").innerHTML = "<p>No QR Code available. Please log in.</p>";
+        }
+    });
+
+    </script>
+
+</body>
+</html>

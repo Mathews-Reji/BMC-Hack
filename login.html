@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Registration</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: url('bg2.jpg') no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Dark overlay */
+        }
+
+        .container {
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.5);
+            border-right: 1px solid rgba(255,255,255,0.25);
+            padding: 60px;
+            width: 500px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: 0.3s;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .container:hover {
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .toggle {
+            margin-top: 12px;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .toggle:hover {
+            color: #0056b3;
+        }
+
+        .otp-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Page -->
+    <div class="container" id="login-form">
+        <h2>Login</h2>
+        <input type="text" id="loginUsername" placeholder="Username" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button onclick="login()">Login</button>
+        <p class="toggle" onclick="showRegister()">Not registered? Register here</p>
+    </div>
+
+    <!-- Registration Page -->
+    <div class="container" id="register-form" style="display: none;">
+        <h2>Register</h2>
+        <input type="text" id="regUsername" placeholder="Username" required>
+        <input type="password" id="regPassword" placeholder="Password" required>
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        <input type="tel" id="regPhone" placeholder="Phone Number" required>
+        <button onclick="register()">Register</button>
+        <p class="toggle" onclick="showLogin()">Already registered? Login here</p>
+    </div>
+
+    <!-- OTP Verification Page -->
+    <div class="container" id="otp-form" style="display: none;">
+        <h2>Verify OTP</h2>
+        <p>Enter the OTP sent to your phone</p>
+        <input type="text" id="otpCode" placeholder="Enter OTP">
+        <button onclick="verifyOTP()">Verify</button>
+    </div>
+
+    <script>
+        function showRegister() {
+            document.getElementById("login-form").style.display = "none";
+            document.getElementById("register-form").style.display = "block";
+        }
+
+        function showLogin() {
+            document.getElementById("register-form").style.display = "none";
+            document.getElementById("login-form").style.display = "block";
+        }
+
+        async function login() {
+            let username = document.getElementById("loginUsername").value;
+            let password = document.getElementById("loginPassword").value;
+
+            if (username === "" || password === "") {
+                alert("Please fill in all fields!");
+                return;
+            }
+
+            // Sending login request to the server
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (response.status === 200) {
+    alert("Login successful for " + username);
+
+    // Store QR Code in Local Storage
+    localStorage.setItem("qrCode", data.qrCode); 
+
+    // Redirect to dashboard
+    window.location.href = "dash.html";
+} else {
+    alert(data.error);
+}
+
+        }
+
+        async function register() {
+            let username = document.getElementById("regUsername").value;
+            let password = document.getElementById("regPassword").value;
+            let confirmPassword = document.getElementById("confirmPassword").value;
+            let phone = document.getElementById("regPhone").value;
+
+            if (username === "" || password === "" || confirmPassword === "" || phone === "") {
+                alert("Please fill in all fields!");
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            if (phone.length !== 10) {
+                alert("Enter a valid 10-digit phone number!");
+                return;
+            }
+
+            // Sending registration request to the server
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password, confirmPassword, phone })
+            });
+
+            const data = await response.json();
+
+            if (response.status === 200) {
+                alert("OTP sent to " + phone);
+                sessionStorage.setItem("otp", data.otp); // Store OTP for verification
+                document.getElementById("register-form").style.display = "none";
+                document.getElementById("otp-form").style.display = "block";
+                console.log(otp)
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function verifyOTP() {
+            let enteredOTP = document.getElementById("otpCode").value;
+            let actualOTP = sessionStorage.getItem("otp");
+
+            if (enteredOTP === actualOTP) {
+                alert("OTP Verified! Registration successful.");
+                document.getElementById("otp-form").style.display = "none";
+                document.getElementById("login-form").style.display = "block";
+            } else {
+                alert("Invalid OTP. Try again.");
+            }
+        }
+    </script>
+
+</body>
+</html>

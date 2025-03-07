@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul class="menu">
+            <li><a href="dash.html">Personal Info</a></li>
+            <li><a href="med_hist.html">Medical History</a></li>
+            <li><a href="allergies.html">Allergies</a></li>
+            <li><a href="medication.html" class="active">Medication</a></li>
+            <li><a href="healthcare.html">Healthcare Providers</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>Medication</h1>
+        <div class="form-container">
+            <form id="medication-form">
+                <div class="form-group">
+                    <label for="medicationName">Medication Name:</label>
+                    <input type="text" id="medicationName" placeholder="Enter medication name">
+                </div>
+                <div class="form-group">
+                    <label for="dosage">Dosage:</label>
+                    <input type="text" id="dosage" placeholder="E.g., 500mg, 10ml">
+                </div>
+                <div class="form-group">
+                    <label for="frequency">Frequency:</label>
+                    <input type="text" id="frequency" placeholder="E.g., Twice a day, Before meals">
+                </div>
+                <button type="submit">Add Medication</button>
+            </form>
+    
+            <h2>Current Medications</h2>
+            <table id="medicationTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Dosage</th>
+                        <th>Frequency</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Medications will be loaded dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById("medication-form");
+    
+        // Load existing medications from backend
+        fetchMedications();
+    
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+    
+            // Collect form data
+            const formData = {
+                medicationName: document.getElementById("medicationName").value,
+                dosage: document.getElementById("dosage").value,
+                frequency: document.getElementById("frequency").value
+            };
+    
+            if (!formData.medicationName || !formData.dosage || !formData.frequency) {
+                alert("Please fill in all fields.");
+                return;
+            }
+    
+            try {
+                const response = await fetch("http://localhost:3000/save-medication", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
+    
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Medication added successfully!");
+                    addRowToTable(formData);
+                    form.reset();
+                } else {
+                    alert("Error: " + result.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while saving data.");
+            }
+        });
+    });
+    
+    function fetchMedications() {
+        fetch("http://localhost:3000/get-medications")
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(addRowToTable);
+            })
+            .catch(error => console.error("Error fetching medications:", error));
+    }
+    
+    function addRowToTable(data) {
+        const table = document.querySelector("#medicationTable tbody");
+        const row = table.insertRow();
+        row.innerHTML = `
+            <td>${data.medicationName}</td>
+            <td>${data.dosage}</td>
+            <td>${data.frequency}</td>
+            <td><button class="delete-btn" onclick="deleteMedication('${data._id}', this)">Delete</button></td>
+        `;
+    }
+    
+    async function deleteMedication(id, button) {
+        try {
+            const response = await fetch(`http://localhost:3000/delete-medication/${id}`, { method: "DELETE" });
+            const result = await response.json();
+    
+            if (response.ok) {
+                button.parentElement.parentElement.remove();
+                alert("Medication deleted!");
+            } else {
+                alert("Error: " + result.error);
+            }
+        } catch (error) {
+            console.error("Error deleting medication:", error);
+            alert("An error occurred.");
+        }
+    }
+    </script>
+    
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Body styling */
+        body {
+            display: flex;
+            background-color: #b3b1eb;
+            color: #f6f2f2;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(135deg, #12013B, #34495e);
+            padding: 20px;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            color: #ecf0f1;
+            margin-bottom: 20px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 15px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #ecf0f1;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            text-align: center;
+            transition: 0.3s ease-in-out;
+        }
+
+        .menu a:hover, .menu a.active {
+            background-color: #b3b1eb;
+            color: white;
+        }
+
+        /* Content Styling */
+        .content {
+            flex-grow: 1;
+            padding: 40px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #14072d;
+        }
+
+        /* Form Styling */
+        .form-container {
+            background: linear-gradient(135deg, #12013B, #34495e);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(241, 232, 232, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #a2aeba;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        /* Button Styling */
+        button {
+            width: 100%;
+            background-color: #a696db;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #16a085;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #a696db;
+            color: rgb(4, 4, 4);
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Delete Button */
+        .delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .delete-btn:hover {
+            background-color: darkred;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 220px;
+                padding: 15px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            button {
+                font-size: 14px;
+            }
+        }
+
+
+    </style>
+
+</body>
+</html>
