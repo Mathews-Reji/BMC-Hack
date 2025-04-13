@@ -145,38 +145,38 @@
         }
 
         async function login() {
-            let username = document.getElementById("loginUsername").value;
-            let password = document.getElementById("loginPassword").value;
+    let username = document.getElementById("loginUsername").value;
+    let password = document.getElementById("loginPassword").value;
 
-            if (username === "" || password === "") {
-                alert("Please fill in all fields!");
-                return;
-            }
+    if (username === "" || password === "") {
+        alert("Please fill in all fields!");
+        return;
+    }
 
-            // Sending login request to the server
-            const response = await fetch('http://localhost:3000/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
+    // Sending login request to the server
+    const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+    });
 
-            const data = await response.json();
+    const data = await response.json();
 
-            if (response.status === 200) {
-    alert("Login successful for " + username);
+    if (response.status === 200) {
+        alert("Login successful for " + username);
 
-    // Store QR Code in Local Storage
-    localStorage.setItem("qrCode", data.qrCode); 
+        // Store QR Code in Session Storage
+        sessionStorage.setItem("qrCode", data.qrCode);
 
-    // Redirect to dashboard
-    window.location.href = "dash.html";
-} else {
-    alert(data.error);
+        // Redirect to dashboard
+        window.location.href = "dash.html";
+    } else {
+        alert(data.error);
+    }
 }
 
-        }
 
         async function register() {
             let username = document.getElementById("regUsername").value;
@@ -200,7 +200,7 @@
             }
 
             // Sending registration request to the server
-            const response = await fetch('http://localhost:3000/register', {
+            const response = await fetch('http://localhost:5000/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
